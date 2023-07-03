@@ -1,8 +1,8 @@
 package com.sebar.Medical.controller;
 
-import com.sebar.Medical.dto.PatientCreationDTO;
-import com.sebar.Medical.dto.PatientDTO;
-import com.sebar.Medical.dto.PatientEditDTO;
+import com.sebar.Medical.model.dto.PatientCreationDTO;
+import com.sebar.Medical.model.dto.PatientDTO;
+import com.sebar.Medical.model.dto.PatientEditDTO;
 import com.sebar.Medical.service.PatientService;
 import org.springframework.web.bind.annotation.*;
 import lombok.*;

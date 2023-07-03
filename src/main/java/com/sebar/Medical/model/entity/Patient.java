@@ -1,10 +1,9 @@
-package com.sebar.Medical.model;
+package com.sebar.Medical.model.entity;
 
-import com.sebar.Medical.dto.PatientEditDTO;
+import com.sebar.Medical.model.dto.PatientEditDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 
 //@NonNullFields

@@ -1,14 +1,14 @@
 package com.sebar.Medical.service;
 
-import com.sebar.Medical.dto.PatientCreationDTO;
-import com.sebar.Medical.dto.PatientDTO;
-import com.sebar.Medical.dto.PatientEditDTO;
+import com.sebar.Medical.model.dto.PatientCreationDTO;
+import com.sebar.Medical.model.dto.PatientDTO;
+import com.sebar.Medical.model.dto.PatientEditDTO;
 import com.sebar.Medical.exception.IllegalPatientDataException;
 import com.sebar.Medical.exception.PatientException;
 import com.sebar.Medical.exception.PatientNotFoundException;
 import com.sebar.Medical.mapper.PatientMapper;
 import com.sebar.Medical.repository.PatientRepository;
-import com.sebar.Medical.model.Patient;
+import com.sebar.Medical.model.entity.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.sebar.Medical.dto;
+package com.sebar.Medical.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
