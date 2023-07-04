@@ -1,21 +1,19 @@
-package com.sebar.Medical.dto;
+package com.sebar.Medical.model.dto;
 
+import com.sebar.Medical.model.Specialization;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientCreationDTO{
+public class DoctorDTO {
+    private long id;
+    private Specialization specialization;
     private String email;
-    private String password;
-    private String idCardNo;
     private String firstName;
     private String lastName;
-    private String phoneNumber;
-    private LocalDate birthday;
 }
