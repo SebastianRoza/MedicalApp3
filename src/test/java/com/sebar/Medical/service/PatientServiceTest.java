@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,14 +67,15 @@ public class PatientServiceTest {
         Patient patient = new Patient();
         patient.setEmail("sr@gmail.com");
         PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setEmail("sr@gmail.com");
         Mockito.when(patientRepository.findByEmail(eq(patientCreationDTO.getEmail()))).thenReturn(Optional.empty());
         Mockito.when(patientMapper.toEntity(eq(patientCreationDTO))).thenReturn(patient);
         Mockito.when(patientRepository.save(eq(patient))).thenReturn(patient);
         Mockito.when(patientMapper.toDto(eq(patient))).thenReturn(patientDTO);
 
-        patientService.addPatient(patientCreationDTO);
+        var result= patientService.addPatient(patientCreationDTO);
 
-        Assertions.assertEquals(patient.getEmail(), patientCreationDTO.getEmail());
+        Assertions.assertEquals(patient.getEmail(), result.getEmail());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    void removePatient_PatientFound_PatientRemovedFromDb() { //remo
+    void removePatient_PatientFound_PatientRemovedFromDb() {
         Patient patient = new Patient();
         Mockito.when(patientRepository.findByEmail(eq(patient.getEmail()))).thenReturn(Optional.of(patient));
 
@@ -177,7 +177,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    void editPatient_PatientFound_PatientDataEdited() {
+    void editPatient_EmailChangeNotRequested_PatientEdited() {
         Patient patient = new Patient();
         patient.setEmail("xxx");
         PatientEditDTO patientEditDTO = new PatientEditDTO();
@@ -200,7 +200,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    void editPatient_PatientFound_PatientDataEditedWithEmail() {
+    void editPatient_DataAndEmailEditRequested_PatientEdited() {
         Patient patient = new Patient();
         patient.setEmail("xxx");
         PatientEditDTO patientEditDTO = new PatientEditDTO();
@@ -224,7 +224,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    void editPatient_PatientNotFound_DataDidNotChanged() {
+    void editPatient_PatientNotFound_ExceptionThrown() {
         Patient patient = new Patient();
         patient.setEmail("xxx");
         PatientEditDTO patientEditDTO = new PatientEditDTO();

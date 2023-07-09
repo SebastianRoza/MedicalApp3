@@ -53,10 +53,9 @@ public class PatientService {
 
     public PatientDTO editPatient(String email, PatientEditDTO editInfoDTO) {
         Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient does not exist in database"));
-        //pacjent1 zawsze musi byc prawda jesli te dwa maile sa rowne sobie
         Optional<Patient> patient1 = patientRepository.findByEmail(editInfoDTO.getEmail());
-       boolean isNotTheSamePatient=!patient.getEmail().equals(editInfoDTO.getEmail());
-        if ( isNotTheSamePatient && patient1.isPresent()) {
+        boolean isNotTheSamePatient = !patient.getEmail().equals(editInfoDTO.getEmail());
+        if (isNotTheSamePatient && patient1.isPresent()) {
             throw new PatientException("There exists a user with such an email", HttpStatus.CONFLICT);   //BAD_REQUEST ewentualnie
         }
         if (editInfoDTO.getPassword() == null || editInfoDTO.getFirstName() == null || editInfoDTO.getLastName() == null
