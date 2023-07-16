@@ -1,4 +1,5 @@
 package com.sebar.Medical.controller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sebar.Medical.model.dto.PatientCreationDTO;
 import com.sebar.Medical.model.dto.PatientEditDTO;
@@ -58,7 +59,14 @@ public class PatientControllerTests {
     @Test
     @Rollback
     void editPatient_PatientToEditFound_DataEdited() throws Exception {
-        PatientEditDTO patientEditDTO = new PatientEditDTO("test.com", "dd", "dd", "fd", "321", LocalDate.EPOCH);
+        PatientEditDTO patientEditDTO = PatientEditDTO.builder()
+                .email("test.com")
+                .firstName("dd")
+                .lastName("fd")
+                .birthday(LocalDate.EPOCH)
+                .password("dd")
+                .phoneNumber("3232")
+                .build();
         mockMvc.perform(put("/patients/marek.k@gmail.com")
                         .content(objectMapper.writeValueAsString(patientEditDTO))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -81,7 +89,15 @@ public class PatientControllerTests {
     @Test
     @Rollback
     void addPatient_DataNotNull_PatientAdded() throws Exception {
-        PatientCreationDTO patientCreationDTO = new PatientCreationDTO("sds", "ds", "43", "ds", "fd", "32", LocalDate.EPOCH);
+        PatientCreationDTO patientCreationDTO = PatientCreationDTO.builder()
+                .email("sds")
+                .password("s")
+                .idCardNo("d3")
+                .firstName("f")
+                .lastName("fd")
+                .phoneNumber("f34")
+                .birthday(LocalDate.EPOCH)
+                .build();
         mockMvc.perform(post("/patients")
                         .content(objectMapper.writeValueAsString(patientCreationDTO))
                         .contentType(MediaType.APPLICATION_JSON))
