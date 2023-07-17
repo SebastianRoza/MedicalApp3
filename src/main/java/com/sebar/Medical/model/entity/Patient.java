@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Builder
-
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
