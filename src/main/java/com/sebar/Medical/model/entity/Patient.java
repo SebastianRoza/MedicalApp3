@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-//@NonNullFields
+
 @Getter
 @Setter
 @ToString
@@ -26,7 +27,8 @@ public class Patient {
     private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
-
+    @OneToMany(mappedBy = "patient")
+    private Set<Visit> visits;
 
 
     public void update(PatientEditDTO patientEditDTO) {

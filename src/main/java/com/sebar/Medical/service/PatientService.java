@@ -74,5 +74,9 @@ public class PatientService {
         patient.setPassword(password);
         patientRepository.save(patient);
     }
+    public Patient getPatientById(Long id){
+        return patientRepository.findById(id)
+                .orElseThrow(() -> new PatientNotFoundException("Patient does not exist in database"));
+    }
 
 }

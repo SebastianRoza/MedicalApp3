@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: SebastianRoza
+      changes:
+        - createTable:
+            tableName: visit
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_appointment_id
+                  name: ID
+                  type: int
+              - column:
+                  name: VISIT_TIME
+                  type: timestamp
+              - column:
+                  constraints:
+                    foreignKeyName: fk_patient_id
+                    references: patient
+                  name: PATIENT_ID
+                  type: int
