@@ -16,12 +16,12 @@ public class VisitController {
     private final VisitService visitService;
 
     @PostMapping
-    public VisitDto addAppointment(@RequestBody VisitCreationDto visitCreationDto) {
+    public VisitDto addVisit(@RequestBody VisitCreationDto visitCreationDto) {
         return visitService.addVisit(visitCreationDto);
     }
 
     @GetMapping
-    public List<VisitDto> showAllAppointments() {
+    public List<VisitDto> showAllVisits() {
         return visitService.showAllVisits();
     }
 

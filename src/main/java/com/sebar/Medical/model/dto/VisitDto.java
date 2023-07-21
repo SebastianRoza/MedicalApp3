@@ -14,7 +14,6 @@ public class VisitDto {
     private Long id;
     private LocalDateTime visitTime;
     private PatientDTO patient;
-
     private Long patientId;
 
 }

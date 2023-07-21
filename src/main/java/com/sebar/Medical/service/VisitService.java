@@ -28,6 +28,18 @@ public class VisitService {
 
     public VisitDto addVisit(VisitCreationDto visitCreationDto) {
         Optional<Visit> visitOptional = visitRepository.findByVisitTime(visitCreationDto.getVisitTime());
+//        for (Visit visit : visitRepository.findAll()) {
+//            LocalDateTime newVisitStartTime=visitCreationDto.getVisitTime();
+//            LocalDateTime newVisitEndTime=visitCreationDto.getEndTime();
+//            LocalDateTime existingVisitStartTime=visit.getVisitTime();
+//            LocalDateTime existingVisitEndTime=visit.getEndTime();
+//
+//            if((!newVisitStartTime.isAfter(existingVisitStartTime) && newVisitStartTime.isBefore(existingVisitEndTime)) ||
+//                    (!newVisitEndTime.isAfter(existingVisitStartTime) && newVisitEndTime.isBefore(existingVisitEndTime)) ||
+//                    (!newVisitStartTime.isBefore(existingVisitStartTime) && newVisitEndTime.isAfter(existingVisitEndTime))){
+//                throw new WrongDateException("In this time slot, visit already exist");
+//            }
+//        }
         if (visitOptional.isPresent()) {
             throw new WrongDateException("In this time slot, visit already exist");
         }
