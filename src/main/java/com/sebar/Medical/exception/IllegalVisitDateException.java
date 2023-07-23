@@ -2,8 +2,8 @@ package com.sebar.Medical.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class WrongDateException extends MedicalException{
-    public WrongDateException(String message){
+public class IllegalVisitDateException extends MedicalException {
+    public IllegalVisitDateException(String message) {
         super(message, HttpStatus.BAD_REQUEST);
     }
 }

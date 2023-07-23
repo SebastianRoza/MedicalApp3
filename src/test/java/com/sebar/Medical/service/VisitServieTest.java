@@ -1,7 +1,7 @@
 package com.sebar.Medical.service;
 
 import com.sebar.Medical.exception.VisitException;
-import com.sebar.Medical.exception.WrongDateException;
+import com.sebar.Medical.exception.IllegalVisitDateException;
 import com.sebar.Medical.mapper.PatientMapper;
 import com.sebar.Medical.mapper.VisitMapper;
 import com.sebar.Medical.model.dto.PatientDTO;
@@ -9,6 +9,7 @@ import com.sebar.Medical.model.dto.VisitCreationDto;
 import com.sebar.Medical.model.dto.VisitDto;
 import com.sebar.Medical.model.entity.Patient;
 import com.sebar.Medical.model.entity.Visit;
+import com.sebar.Medical.repository.PatientRepository;
 import com.sebar.Medical.repository.VisitRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,11 +32,11 @@ public class VisitServieTest {
     @Mock
     PatientMapper patientMapper;
     @Mock
-    PatientService patientService;
-    @Mock
     VisitMapper visitMapper;
     @Mock
     VisitRepository visitRepository;
+    @Mock
+    PatientRepository patientRepository;
     @InjectMocks
     VisitService visitService;
 
@@ -57,7 +58,8 @@ public class VisitServieTest {
 
         var result = visitService.addVisit(visitCreationDto);
 
-        Assertions.assertEquals(LocalDateTime.of(2034, 12, 12, 12, 0), result.getVisitTime());
+        Assertions.assertEquals(LocalDateTime.of(2034, 12, 12, 12, 0), result.
+                getVisitTime());
     }
 
     @Test
@@ -66,9 +68,26 @@ public class VisitServieTest {
         Visit visit = new Visit();
         Mockito.when(visitRepository.findByVisitTime(eq(visitCreationDto.getVisitTime()))).thenReturn(Optional.of(visit));
 
-        var result = Assertions.assertThrows(WrongDateException.class, () -> visitService.addVisit(visitCreationDto));
+        var result = Assertions.assertThrows(IllegalVisitDateException.class, () -> visitService.addVisit(visitCreationDto));
 
         Assertions.assertEquals("In this time slot, visit already exist", result.getMessage());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getHttpStatus());
+    }
+
+    @Test
+    void addVisit_VisitsAreOverlapping_ExceptionThrown() {
+        VisitCreationDto visitCreationDto = new VisitCreationDto();
+        visitCreationDto.setVisitTime(LocalDateTime.of(2011, 12, 12, 12, 0));
+        visitCreationDto.setEndVisitTime(LocalDateTime.of(2011, 12, 12, 12, 15));
+        Visit visit = new Visit();
+        List<Visit> visitList = new ArrayList<>();
+        visitList.add(visit);
+        Mockito.when(visitRepository.findByVisitTime(eq(visitCreationDto.getVisitTime()))).thenReturn(Optional.of(visit));
+        Mockito.when(visitRepository.findAllOverlapping(eq(visitCreationDto.getVisitTime()), eq(visitCreationDto.getEndVisitTime()))).thenReturn(visitList);
+
+        var result = Assertions.assertThrows(IllegalVisitDateException.class, () -> visitService.addVisit(visitCreationDto));
+
+        Assertions.assertEquals("In this time slot, visits are overlapping", result.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getHttpStatus());
     }
 
@@ -78,7 +97,7 @@ public class VisitServieTest {
         visitCreationDto.setVisitTime(LocalDateTime.of(2011, 12, 12, 12, 0));
         Mockito.when(visitRepository.findByVisitTime(eq(visitCreationDto.getVisitTime()))).thenReturn(Optional.empty());
 
-        var result = Assertions.assertThrows(WrongDateException.class, () -> visitService.addVisit(visitCreationDto));
+        var result = Assertions.assertThrows(IllegalVisitDateException.class, () -> visitService.addVisit(visitCreationDto));
 
         Assertions.assertEquals("Input date is in the past or you did not insert a full hour", result.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getHttpStatus());
@@ -90,7 +109,7 @@ public class VisitServieTest {
         visitCreationDto.setVisitTime(LocalDateTime.of(2011, 12, 12, 12, 14));
         Mockito.when(visitRepository.findByVisitTime(eq(visitCreationDto.getVisitTime()))).thenReturn(Optional.empty());
 
-        var result = Assertions.assertThrows(WrongDateException.class, () -> visitService.addVisit(visitCreationDto));
+        var result = Assertions.assertThrows(IllegalVisitDateException.class, () -> visitService.addVisit(visitCreationDto));
 
         Assertions.assertEquals("Input date is in the past or you did not insert a full hour", result.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getHttpStatus());
@@ -140,7 +159,7 @@ public class VisitServieTest {
                 .visitTime(LocalDateTime.of(2041, 12, 12, 12, 0))
                 .build();
         Mockito.when(visitRepository.findById(eq(1L))).thenReturn(Optional.of(visit));
-        Mockito.when(patientService.getPatientById(patient.getId())).thenReturn(patient);
+        Mockito.when(patientRepository.findById(patient.getId())).thenReturn(Optional.of(patient));
         Mockito.when(visitRepository.save(visit)).thenReturn(visit);
         Mockito.when(patientMapper.toDto(eq(patient))).thenReturn(patientDTO);
 
@@ -189,7 +208,7 @@ public class VisitServieTest {
                 .build();
         visitList.add(visit1);
         visitList.add(visit2);
-        Mockito.when(visitRepository.findByPatient(eq(patientService.getPatientById(patient.getId())))).thenReturn(visitList);
+        Mockito.when(visitRepository.findByPatient(eq(patientRepository.findById(patient.getId()).get()))).thenReturn(visitList);
         Mockito.when(visitMapper.toDto(eq(visit1))).thenReturn(visitDto1);
         Mockito.when(visitMapper.toDto(eq(visit2))).thenReturn(visitDto2);
 

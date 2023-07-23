@@ -34,7 +34,7 @@ public class VisitControllerTest {
     @Rollback
     void addVisit_SuchaAVisitDoesNotExist_VisitAdded() throws Exception {
         VisitCreationDto visitCreationDto = VisitCreationDto.builder()
-                .visitTime(LocalDateTime.of(2035, 12, 12, 12, 00))
+                .visitTime(LocalDateTime.of(2035, 12, 12, 12, 0))
                 .build();
         mockMvc.perform(post("/visits")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -42,7 +42,6 @@ public class VisitControllerTest {
                 .andDo(print())
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.visitTime").value("2035-12-12T12:00:00"));
-
     }
 
     @Test
@@ -58,7 +57,8 @@ public class VisitControllerTest {
 
     @Test
     void assignPatientToVisit_patientFoundAndVisitExistAndIsFree_PatientAssigned() throws Exception {
-        mockMvc.perform(patch("/visits/{visitId}/{patientId}", 1, 1)
+        mockMvc.perform(patch("/visits/{visitId}", 1)
+                        .param("patientId", "1")
                         .content("{\"key\":\"value\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -68,7 +68,7 @@ public class VisitControllerTest {
 
     @Test
     void showPatientVisits_patientFound_visitsShown() throws Exception {
-        mockMvc.perform(get("/visits/{patientId}",1)
+        mockMvc.perform(get("/visits/{patientId}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is(200))

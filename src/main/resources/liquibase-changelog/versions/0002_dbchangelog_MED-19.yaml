@@ -11,11 +11,14 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_appointment_id
+                    primaryKeyName: pk_visit_id
                   name: ID
                   type: int
               - column:
                   name: VISIT_TIME
+                  type: timestamp
+              - column:
+                  name: END_VISIT_TIME
                   type: timestamp
               - column:
                   constraints:
