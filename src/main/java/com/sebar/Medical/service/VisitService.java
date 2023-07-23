@@ -31,7 +31,7 @@ public class VisitService {
     public VisitDto addVisit(VisitCreationDto visitCreationDto) {
         Optional<Visit> visitOptional = visitRepository.findByVisitTime(visitCreationDto.getVisitTime());
         if (visitCreationDto.getVisitTime() == null) {
-            throw new NullPointerException("Time of the visit is null");
+            throw new IllegalVisitDateException("Time of the visit is null");
         }
         if (!(visitRepository.findAllOverlapping(visitCreationDto.getVisitTime(), visitCreationDto.getEndVisitTime())).isEmpty()) {
             throw new IllegalVisitDateException("In this time slot, visits are overlapping");
