@@ -90,5 +90,4 @@ public class DoctorServiceTest {
 
         Assertions.assertEquals("Facility assigned", result);
     }
-
 }

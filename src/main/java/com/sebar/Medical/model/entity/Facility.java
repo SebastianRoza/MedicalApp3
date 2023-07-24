@@ -23,5 +23,5 @@ public class Facility {
     private String streetName;
     private String streetNumber;
     @ManyToMany(mappedBy = "facilitiesList")
-    private Set<Doctor> doctorList;
+    private Set<Doctor> doctors;
 }

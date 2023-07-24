@@ -26,5 +26,5 @@ public class Doctor {
             joinColumns = @JoinColumn(name = "doctor_id"),
             inverseJoinColumns = @JoinColumn(name= "facility_id")
     )
-    private Set<Facility> facilitiesList;
+    private Set<Facility> facilities;
 }

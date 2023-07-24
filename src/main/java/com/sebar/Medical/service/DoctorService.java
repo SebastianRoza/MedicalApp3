@@ -37,7 +37,7 @@ public class DoctorService {
         if (doctorRepository.isDoctorAlreadyInFacility(doctorId, facilityId)) {
             throw new DoctorException("Such a doctor is already in this facility");
         }
-        doctor.getFacilitiesList().add(facility);
+        doctor.getFacilities().add(facility);
         doctorRepository.save(doctor);
         return "Facility assigned";
     }
