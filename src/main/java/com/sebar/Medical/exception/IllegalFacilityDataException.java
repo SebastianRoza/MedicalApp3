@@ -2,8 +2,8 @@ package com.sebar.Medical.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class IllegalPatientDataException extends MedicalException{
-    public IllegalPatientDataException(String message ) {
+public class IllegalFacilityDataException extends MedicalException{
+    public IllegalFacilityDataException(String message ) {
         super(message, HttpStatus.BAD_REQUEST);
     }
 }

@@ -57,7 +57,7 @@ public class VisitService {
     public PatientDTO assignPatientToVisit(Long patientId, Long visitId) {
         Optional<Visit> visitOptional = visitRepository.findById(visitId);
         if (visitOptional.get().getVisitTime() == null) {
-            throw new NullPointerException("Time of the visit is null");
+            throw new IllegalVisitDateException("Time of the visit is null");
         }
         if (visitOptional.isEmpty() || visitOptional.get().getVisitTime().isBefore(LocalDateTime.now()) || visitOptional.get().getPatient() != null) {
             throw new VisitException("Such a visit is not available, you want to assign to visit which was in the past or visit is already assigned");

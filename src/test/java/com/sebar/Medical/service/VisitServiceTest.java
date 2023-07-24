@@ -28,7 +28,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
-public class VisitServieTest {
+public class VisitServiceTest {
     @Mock
     PatientMapper patientMapper;
     @Mock
@@ -65,6 +65,7 @@ public class VisitServieTest {
     @Test
     void addVisit_GivenHourBooked_ExceptionThrown() {
         VisitCreationDto visitCreationDto = new VisitCreationDto();
+        visitCreationDto.setVisitTime(LocalDateTime.of(2034, 12, 12, 12, 0));
         Visit visit = new Visit();
         Mockito.when(visitRepository.findByVisitTime(eq(visitCreationDto.getVisitTime()))).thenReturn(Optional.of(visit));
 
