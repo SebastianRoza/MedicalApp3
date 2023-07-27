@@ -172,11 +172,11 @@ public class VisitServiceTest {
 
     @Test
     void assignPatientToVisit_VisitNotFound_PatientNotAdded() {
-        Mockito.when(visitRepository.findById(eq(6L))).thenReturn(Optional.empty());
+        Mockito.when(visitRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
-        var result = Assertions.assertThrows(VisitException.class, () -> visitService.assignPatientToVisit(1L, 6L));
+        var result = Assertions.assertThrows(VisitException.class , () -> visitService.assignPatientToVisit(1L, 1L));
 
-        Assertions.assertEquals("Such a visit do not exist, you want to assign to visit which was in the past or visit is already assigned", result.getMessage());
+        Assertions.assertEquals("No such a visit in system", result.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getHttpStatus());
     }
 
@@ -209,7 +209,8 @@ public class VisitServiceTest {
                 .build();
         visitList.add(visit1);
         visitList.add(visit2);
-        Mockito.when(visitRepository.findByPatient(eq(patientRepository.findById(patient.getId()).get()))).thenReturn(visitList);
+        Mockito.when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
+        Mockito.when(visitRepository.findByPatient(eq(patient))).thenReturn(visitList);
         Mockito.when(visitMapper.toDto(eq(visit1))).thenReturn(visitDto1);
         Mockito.when(visitMapper.toDto(eq(visit2))).thenReturn(visitDto2);
 

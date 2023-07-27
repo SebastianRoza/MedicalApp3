@@ -3,22 +3,34 @@ package com.sebar.Medical.service;
 import com.sebar.Medical.exception.DoctorException;
 import com.sebar.Medical.exception.FacilityException;
 import com.sebar.Medical.exception.IllegalDoctorDataException;
+import com.sebar.Medical.exception.VisitException;
 import com.sebar.Medical.mapper.DoctorMapper;
-import com.sebar.Medical.model.dto.DoctorCreationDto;
-import com.sebar.Medical.model.dto.DoctorDTO;
+import com.sebar.Medical.mapper.FacilityMapper;
+import com.sebar.Medical.mapper.PatientMapper;
+import com.sebar.Medical.mapper.VisitMapper;
+import com.sebar.Medical.model.dto.*;
 import com.sebar.Medical.model.entity.Doctor;
 import com.sebar.Medical.model.entity.Facility;
+import com.sebar.Medical.model.entity.Visit;
 import com.sebar.Medical.repository.DoctorRepository;
 import com.sebar.Medical.repository.FacilityRepository;
+import com.sebar.Medical.repository.VisitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DoctorService {
     private final DoctorMapper doctorMapper;
+    private final FacilityMapper facilityMapper;
+    private final PatientMapper patientMapper;
+    private final VisitMapper visitMapper;
     private final DoctorRepository doctorRepository;
     private final FacilityRepository facilityRepository;
+    private final VisitRepository visitRepository;
 
     public DoctorDTO addDoctor(DoctorCreationDto doctorCreationDto) {
         if (doctorCreationDto.getEmail() == null) {
@@ -31,7 +43,7 @@ public class DoctorService {
         return doctorMapper.toDto(doctorRepository.save(doctor));
     }
 
-    public String assignFacilityToDoctor(Long doctorId, Long facilityId) {
+    public FacilityDto assignFacilityToDoctor(Long doctorId, Long facilityId) {
         Facility facility = facilityRepository.findById(facilityId).orElseThrow(() -> new FacilityException("Facility with this id does not exist"));
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new DoctorException("Doctor with this id does not exist"));
         if (doctorRepository.isDoctorAlreadyInFacility(doctorId, facilityId)) {
@@ -39,6 +51,45 @@ public class DoctorService {
         }
         doctor.getFacilities().add(facility);
         doctorRepository.save(doctor);
-        return "Facility assigned";
+        return facilityMapper.toDto(facility);
+    }
+
+    public List<DoctorDTO> showAllDoctors() {
+        return doctorRepository.findAll()
+                .stream()
+                .map(doctorMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<FacilityDto> showAllFacilitiesWithGivenDoctor(Long doctorId) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new DoctorException("Doctor not found"));
+        return doctor.getFacilities().stream()
+                .map(facilityMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<VisitDto> showAllVisits(Long doctorId) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new DoctorException("Doctor not found"));
+        return doctor.getVisits().stream()
+                .map(visitMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public VisitDto assignVisit(Long doctorId, Long visitId) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new DoctorException("Doctor not found"));
+        Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new VisitException("Visit not found"));
+        if (visit.getDoctor() != null) {
+            throw new VisitException("Visit has already assigned Doctor");
+        }
+        visit.setDoctor(doctor);
+        visitRepository.save(visit);
+        return visitMapper.toDto(visit);
+    }
+
+    public List<PatientDTO> getDoctorPatients(Long doctorId) {
+        doctorRepository.findById(doctorId).orElseThrow(() -> new DoctorException("Doctor not found"));
+        return visitRepository.findDoctorPatients(doctorId).stream()
+                .map(patientMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

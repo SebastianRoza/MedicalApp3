@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class DoctorDTO {
-    private long id;
+    private Long id;
     private Specialization specialization;
     private String email;
     private String password;

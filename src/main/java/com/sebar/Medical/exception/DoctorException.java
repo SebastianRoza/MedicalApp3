@@ -4,6 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class DoctorException extends MedicalException {
     public DoctorException(String message) {
-        super(message, HttpStatus.CONFLICT);
+        super(message, HttpStatus.NOT_FOUND);
     }
 }

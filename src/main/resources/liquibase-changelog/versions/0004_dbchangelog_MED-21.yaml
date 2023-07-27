@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: SebastianRoza
+      changes:
+        - addColumn:
+            tableName: visit
+            columns:
+              - column:
+                  constraints:
+                    foreignKeyName: fk_doctor_id
+                    reference: doctor
+                  name: DOCTOR_ID
+                  type: int

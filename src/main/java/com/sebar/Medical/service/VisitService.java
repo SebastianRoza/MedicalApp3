@@ -55,16 +55,16 @@ public class VisitService {
     }
 
     public PatientDTO assignPatientToVisit(Long patientId, Long visitId) {
-        Optional<Visit> visitOptional = visitRepository.findById(visitId);
-        if (visitOptional.get().getVisitTime() == null) {
+        Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new VisitException("No such a visit in system"));
+        if (visit.getVisitTime() == null) {
             throw new IllegalVisitDateException("Time of the visit is null");
         }
-        if (visitOptional.isEmpty() || visitOptional.get().getVisitTime().isBefore(LocalDateTime.now()) || visitOptional.get().getPatient() != null) {
+        if (visit.getVisitTime().isBefore(LocalDateTime.now()) || visit.getPatient() != null) {
             throw new VisitException("Such a visit is not available, you want to assign to visit which was in the past or visit is already assigned");
         }
         Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new PatientNotFoundException("Patient not found"));
-        visitOptional.get().setPatient(patient);
-        visitRepository.save(visitOptional.get());
+        visit.setPatient(patient);
+        visitRepository.save(visit);
         return patientMapper.toDto(patient);
     }
 

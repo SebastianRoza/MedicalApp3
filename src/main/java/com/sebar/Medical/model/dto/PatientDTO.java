@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class PatientDTO {
-    private long id;
+    private Long id;
     private String email;
     private String firstName;
     private String lastName;

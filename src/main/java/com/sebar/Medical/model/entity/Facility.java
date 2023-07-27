@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +22,6 @@ public class Facility {
     private String zipCode;
     private String streetName;
     private String streetNumber;
-    @ManyToMany(mappedBy = "facilitiesList")
-    private Set<Doctor> doctors;
+    @ManyToMany(mappedBy = "facilities")
+    private List<Doctor> doctors;
 }

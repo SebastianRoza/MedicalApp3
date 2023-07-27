@@ -4,7 +4,7 @@ import com.sebar.Medical.model.Specialization;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +15,7 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
     private Specialization specialization;
     private String email;
     private String password;
@@ -22,9 +23,11 @@ public class Doctor {
     private String lastName;
     @ManyToMany
     @JoinTable(
-            name= "doctors_and_facilities",
+            name = "doctors_and_facilities",
             joinColumns = @JoinColumn(name = "doctor_id"),
-            inverseJoinColumns = @JoinColumn(name= "facility_id")
+            inverseJoinColumns = @JoinColumn(name = "facility_id")
     )
-    private Set<Facility> facilities;
+    private List<Facility> facilities;
+    @OneToMany(mappedBy = "doctor")
+    private List<Visit> visits;
 }

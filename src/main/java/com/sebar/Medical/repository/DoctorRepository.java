@@ -13,7 +13,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     @Query("SELECT COUNT(d) > 0 " +
             "FROM Doctor d " +
-            "JOIN d.facilitiesList c " +
+            "JOIN d.facilities c " +
             "WHERE d.id = :doctorId " +
             "AND c.id = :facilityId")
     boolean isDoctorAlreadyInFacility(Long doctorId, Long facilityId);

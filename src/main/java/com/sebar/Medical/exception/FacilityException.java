@@ -4,6 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class FacilityException extends MedicalException {
     public FacilityException(String message) {
-        super(message, HttpStatus.CONFLICT);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

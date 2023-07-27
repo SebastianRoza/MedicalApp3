@@ -2,6 +2,8 @@ package com.sebar.Medical.model.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class FacilityDto {
     private String zipCode;
     private String streetName;
     private String streetNumber;
+    private List<Long> doctorsId;
 }
