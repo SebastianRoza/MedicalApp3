@@ -47,5 +47,13 @@ public class GeneralExceptionHandler {
     public ResponseEntity<String> nullPointerErrorResponse(VisitException e) {
         return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
+    @ExceptionHandler(DoctorException.class)
+    public ResponseEntity<String> DoctorExceptionErrorResponse(DoctorException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    }
+    @ExceptionHandler(FacilityException.class)
+    public ResponseEntity<String> FacilityExceptionErrorResponse(FacilityException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    }
 
 }

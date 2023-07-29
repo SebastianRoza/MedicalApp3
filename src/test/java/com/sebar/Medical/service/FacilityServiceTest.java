@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
+
 
 @ExtendWith(MockitoExtension.class)
 public class FacilityServiceTest {
@@ -83,7 +85,7 @@ public class FacilityServiceTest {
         doctorList.add(doctor);
         doctorList.add(doctor2);
         facility.setDoctors(doctorList);
-        Mockito.when(facilityRepository.findById(facility.getId())).thenReturn(Optional.of(facility));
+        Mockito.when(facilityRepository.findById(eq(facility.getId()))).thenReturn(Optional.of(facility));
         Mockito.when(doctorMapper.toDto(doctor)).thenReturn(doctorDTO);
         Mockito.when(doctorMapper.toDto(doctor2)).thenReturn(doctorDTO2);
 

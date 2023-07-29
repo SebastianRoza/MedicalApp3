@@ -14,7 +14,7 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
 
     Optional<Visit> findById(Long id);
 
-    List<Visit> findByPatient(Patient Patient);
+    List<Visit> findByPatient(Patient Patient);//delieveredQuery
 
     @Query("SELECT v " +
             "FROM Visit v " +
@@ -22,9 +22,9 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
             "AND v.endVisitTime >= :startVisitTime")
     List<Visit> findAllOverlapping(LocalDateTime startVisitTime, LocalDateTime endVisitTime);
 
-    @Query("SELECT v.patient " +
+    @Query("SELECT DISTINCT v.patient " +
             "FROM Visit v " +
-            "WHERE v.doctor.id = :doctorId"
+            "WHERE v.doctor.id = :doctorId "
     )
     List<Patient> findDoctorPatients(Long doctorId);
 }

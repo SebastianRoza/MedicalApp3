@@ -3,6 +3,8 @@ package com.sebar.Medical.model.dto;
 import com.sebar.Medical.model.Specialization;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,4 +17,5 @@ public class DoctorDTO {
     private String password;
     private String firstName;
     private String lastName;
+    private List<Long> facilitiesId;
 }
