@@ -13,6 +13,7 @@ import com.sebar.Medical.model.entity.Visit;
 import com.sebar.Medical.repository.PatientRepository;
 import com.sebar.Medical.repository.VisitRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VisitService {
     private final VisitRepository visitRepository;
     private final PatientRepository patientRepository;
@@ -29,6 +31,7 @@ public class VisitService {
     private final PatientMapper patientMapper;
 
     public VisitDto addVisit(VisitCreationDto visitCreationDto) {
+        log.info("Add visit: {} to database",visitCreationDto);
         Optional<Visit> visitOptional = visitRepository.findByVisitTime(visitCreationDto.getVisitTime());
         if (visitCreationDto.getVisitTime() == null) {
             throw new IllegalVisitDateException("Time of the visit is null");
@@ -43,6 +46,7 @@ public class VisitService {
                 || visitCreationDto.getVisitTime().getMinute() % 15 != 0) {
             throw new IllegalVisitDateException("Input date is in the past or you did not insert a full hour");
         }
+        log.debug("Possible problems with hour overlapping or existing, new visit time: {}, and end time: {}",visitCreationDto.getVisitTime(),visitCreationDto.getEndVisitTime());
         Visit visit = visitMapper.toEntity(visitCreationDto);
         return visitMapper.toDto(visitRepository.save(visit));
     }
@@ -55,21 +59,22 @@ public class VisitService {
     }
 
     public PatientDTO assignPatientToVisit(Long patientId, Long visitId) {
-        Optional<Visit> visitOptional = visitRepository.findById(visitId);
-        if (visitOptional.get().getVisitTime() == null) {
-            throw new NullPointerException("Time of the visit is null");
+        log.info("Assing patient with this id: {} to bisit with this id: {}",patientId,visitId);
+        Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new VisitException("Visit with this id: "+visitId+"not found in database"));
+        if (visit.getVisitTime() == null) {
+            throw new IllegalVisitDateException("Time of the visit is null: "+visit.getVisitTime());
         }
-        if (visitOptional.isEmpty() || visitOptional.get().getVisitTime().isBefore(LocalDateTime.now()) || visitOptional.get().getPatient() != null) {
+        if (visit.getVisitTime().isBefore(LocalDateTime.now()) || visit.getPatient() != null) {
             throw new VisitException("Such a visit is not available, you want to assign to visit which was in the past or visit is already assigned");
         }
-        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new PatientNotFoundException("Patient not found"));
-        visitOptional.get().setPatient(patient);
-        visitRepository.save(visitOptional.get());
+        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new PatientNotFoundException("Patient with this id:"+patientId+"not found in database"));
+        visit.setPatient(patient);
+        visitRepository.save(visit);
         return patientMapper.toDto(patient);
     }
 
     public List<VisitDto> showPatientVisits(Long patientId) {
-        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new PatientNotFoundException("Patient not found"));
+        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new PatientNotFoundException("Patient with this id:"+patientId+"not found in database"));
         return visitRepository.findByPatient(patient)
                 .stream()
                 .map(visitMapper::toDto)

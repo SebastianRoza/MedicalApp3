@@ -1,0 +1,79 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: SebastianRoza
+      changes:
+        - createTable:
+            tableName: doctor
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_doctor_id
+                  name: ID
+                  type: int
+              - column:
+                  name: SPECIALIZATION
+                  type: varchar(50)
+              - column:
+                  name: EMAIL
+                  type: varchar(70)
+                  constraints:
+                    unique: true
+              - column:
+                  name: PASSWORD
+                  type: varchar(25)
+              - column:
+                  name: FIRST_NAME
+                  type: varchar(25)
+              - column:
+                  name: LAST_NAME
+                  type: varchar(25)
+        - createTable:
+            tableName: facility
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_facility_id
+                  name: ID
+                  type: int
+              - column:
+                  name: NAME
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: unique_facility_name
+              - column:
+                  name: CITY
+                  type: varchar(25)
+              - column:
+                  name: ZIP_CODE
+                  type: varchar(6)
+              - column:
+                  name: STREET_NAME
+                  type: varchar(100)
+              - column:
+                  name: STREET_NUMBER
+                  type: varchar(100)
+        - createTable:
+            tableName: doctors_and_facilities
+            columns:
+              - column:
+                  name: DOCTOR_ID
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_doctor_id
+                    reference: doctor
+                    nullable: false
+              - column:
+                  name: FACILITY_ID
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_facility_id
+                    reference: facility
+                    nullable: false
