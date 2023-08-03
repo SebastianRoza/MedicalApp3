@@ -37,14 +37,16 @@ public class DoctorService {
     public DoctorDTO addDoctor(DoctorCreationDto doctorCreationDto) {
         log.info("Process of adding doctor: {} started", doctorCreationDto);
         if (doctorCreationDto.getEmail() == null) {
-            log.error("Process of adding doctor: {} failed",doctorCreationDto);
+            log.error("Process of adding doctor: {} failed", doctorCreationDto);
             throw new IllegalDoctorDataException("Email can not be null");
         }
         if (doctorRepository.findByEmail(doctorCreationDto.getEmail()).isPresent()) {
             throw new DoctorException("Doctor with this email:" + doctorCreationDto.getEmail() + " already exist");
         }
         Doctor doctor = doctorMapper.toEntity(doctorCreationDto);
-        return doctorMapper.toDto(doctorRepository.save(doctor));
+        var result = doctorRepository.save(doctor);
+        log.info("Process of adding doctor: {} finished", doctor);
+        return doctorMapper.toDto(result);
     }
 
     public FacilityDto assignFacilityToDoctor(Long doctorId, Long facilityId) {

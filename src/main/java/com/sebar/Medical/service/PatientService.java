@@ -34,49 +34,49 @@ public class PatientService {
     }
 
     public PatientDTO addPatient(PatientCreationDTO patientCreationDTO) {
-        log.info("Add patient: {} to database",patientCreationDTO);
+        log.info("Add patient: {} to database", patientCreationDTO);
         Optional<Patient> patient = patientRepository.findByEmail(patientCreationDTO.getEmail());
         if (patient.isPresent()) {
-            throw new PatientException("Patient with this email:"+patientCreationDTO.getEmail()+" exist in database", HttpStatus.CONFLICT);
+            throw new PatientException("Patient with this email:" + patientCreationDTO.getEmail() + " exist in database", HttpStatus.CONFLICT);
         }
         Patient patient2 = patientMapper.toEntity(patientCreationDTO);
         return patientMapper.toDto(patientRepository.save(patient2));
     }
 
     public PatientDTO showPatientByEmail(String email) {
-        log.info("Show patient with given email: {}",email);
+        log.info("Show patient with given email: {}", email);
         return patientRepository.findByEmail(email)
                 .map(patientMapper::toDto)
                 .orElseThrow(() -> new PatientNotFoundException("Patient does not exist in database"));
     }
 
     public void removePatientByEmail(String email) {
-        log.info("Remove patient with given email: {}",email);
-        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with this email:"+email+" not exist in database"));
+        log.info("Remove patient with given email: {}", email);
+        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with this email:" + email + " not exist in database"));
         patientRepository.delete(patient);
     }
 
     public PatientDTO editPatient(String email, PatientEditDTO editInfoDTO) {
-        log.info("Edit information of patient with given email: {}, to given datas: {}",email,editInfoDTO);
-        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with this email: "+email+"does not exist in database"));
+        log.info("Edit information of patient with given email: {}, to given datas: {}", email, editInfoDTO);
+        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with this email: " + email + "does not exist in database"));
         Optional<Patient> patient1 = patientRepository.findByEmail(editInfoDTO.getEmail());
         boolean isNotTheSamePatient = !patient.getEmail().equals(editInfoDTO.getEmail());
         if (isNotTheSamePatient && patient1.isPresent()) {
-            throw new PatientException("There exists a user with such an email"+email, HttpStatus.CONFLICT);   //BAD_REQUEST ewentualnie
+            throw new PatientException("There exists a user with such an email" + email, HttpStatus.CONFLICT);   //BAD_REQUEST ewentualnie
         }
         if (editInfoDTO.getPassword() == null || editInfoDTO.getFirstName() == null || editInfoDTO.getLastName() == null
                 || editInfoDTO.getBirthday() == null || editInfoDTO.getEmail() == null || editInfoDTO.getPhoneNumber() == null) {
-            throw new IllegalPatientDataException("Some input value is null from:"+editInfoDTO);
+            throw new IllegalPatientDataException("Some input value is null from:" + editInfoDTO);
         }
         patient.update(editInfoDTO);
         return patientMapper.toDto(patientRepository.save(patient));
     }
 
     public void editPassword(String email, String password) {
-        log.info("Change password of user with email: {}, to {}",email,password);
-        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with this email"+email+"does not exist in database"));
+        log.info("Change password of user with email: {}, to {}", email, password);
+        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with this email" + email + "does not exist in database"));
         if (password == null) {
-            throw new IllegalPatientDataException("Given password"+password+" is null");
+            throw new IllegalPatientDataException("Given password" + password + " is null");
         }
         patient.setPassword(password);
         patientRepository.save(patient);

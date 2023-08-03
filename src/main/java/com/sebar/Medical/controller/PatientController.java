@@ -32,7 +32,7 @@ public class PatientController {
     }
     @Operation(summary = "Show all patients")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Patients shown",
+            @ApiResponse(responseCode = "200", description = "Patients returned",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = PatientDTO.class)) }),
            })

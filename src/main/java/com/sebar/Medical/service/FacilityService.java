@@ -25,12 +25,12 @@ public class FacilityService {
     private final DoctorMapper doctorMapper;
 
     public FacilityDto addFacility(FacilityCreationDto facilityCreationDto) {
-        log.info("Add facility: {} to the database",facilityCreationDto);
+        log.info("Add facility: {} to the database", facilityCreationDto);
         if (facilityCreationDto.getName() == null) {
             throw new IllegalFacilityDataException("Name can not be empty");
         }
         if (facilityRepository.findByName(facilityCreationDto.getName()).isPresent()) {
-            throw new FacilityException("Facility with this name: "+facilityCreationDto.getName()+" already exist");
+            throw new FacilityException("Facility with this name: " + facilityCreationDto.getName() + " already exist");
         }
         Facility facility = facilityMapper.toEntity(facilityCreationDto);
         return facilityMapper.toDto(facilityRepository.save(facility));
@@ -44,7 +44,7 @@ public class FacilityService {
     }
 
     public List<DoctorDTO> showDoctorsAssignedToFacility(Long facilityId) {
-        log.info("Show doctors assigned  to facility with this id: {}",facilityId);
+        log.info("Show doctors assigned  to facility with this id: {}", facilityId);
         Facility facility = facilityRepository.findById(facilityId).orElseThrow(() -> new FacilityException("Facility not found"));
         return facility.getDoctors().stream()
                 .map(doctorMapper::toDto)
